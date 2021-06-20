@@ -1,10 +1,10 @@
 const express = require('express')
+const app = express()
 const cors = require('cors')
 const bodyParser = require('body-parser')
 require('dotenv').config()
 const MongoClient = require('mongodb').MongoClient;
 
-const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
@@ -19,11 +19,20 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     const JobsCollection = client.db("JobsBD").collection("JobPost");
 
-    app.post('/addJob', (res, req) => {
+
+    app.post('/addJob', (req, res) => {
         const AddJob = req.body
         JobsCollection.insertOne(AddJob)
             .then(result => {
+                console.log('added');
                 res.send(result)
+            })
+    })
+
+    app.get('/jobdetails', (req, res) => {
+        JobsCollection.find({})
+            .toArray((err, jobDetails) => {
+                res.send(jobDetails)
             })
     })
 });
