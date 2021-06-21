@@ -30,16 +30,20 @@ client.connect(err => {
     })
 
     app.get('/jobdetails', (req, res) => {
+        const search = req.query.search
+        JobsCollection.find({jobName: {$regex: search}}).limit(20)
+            .toArray((err, jobDetails) => {
+                res.send(jobDetails)
+            })
+    })
+
+    app.get('/jobs', (req, res) => {
         JobsCollection.find({})
             .toArray((err, jobDetails) => {
                 res.send(jobDetails)
             })
     })
 });
-
-
-
-
 
 
 
